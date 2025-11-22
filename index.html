@@ -20,7 +20,7 @@
       background: #0f172a;
       color: #e5e7eb;
       overflow: hidden;
-      padding: 10px 0;
+      padding: 8px 0;
       font-size: 13px;
       letter-spacing: 0.01em;
     }
@@ -33,7 +33,7 @@
     }
 
     .ticker-highlight {
-      color: #14b8a6; /* BUL butonunun rengi */
+      color: #facc15; /* BUL butonunun rengi */
       font-weight: 600;
     }
 
@@ -44,7 +44,7 @@
 
     .page {
       max-width: 640px;
-      margin: 32px auto 56px;
+      margin: 16px auto 56px; /* ticker sonrası boşluk azaltıldı */
       padding: 0 16px;
     }
 
@@ -144,8 +144,8 @@
     }
 
     input[type="text"]:focus {
-      border-color: #14b8a6;
-      box-shadow: 0 0 0 1px rgba(20,184,166,0.15);
+      border-color: #facc15;
+      box-shadow: 0 0 0 1px rgba(250,204,21,0.25);
       background: #f9fafb;
     }
 
@@ -156,8 +156,8 @@
       font-size: 14px;
       font-weight: 600;
       cursor: pointer;
-      background: #14b8a6;
-      color: white;
+      background: #facc15; /* sadebonus tarzı sarı */
+      color: #111827;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -166,8 +166,8 @@
     }
 
     button:hover {
-      background: #0d9488;
-      box-shadow: 0 4px 10px rgba(13,148,136,0.2);
+      background: #eab308;
+      box-shadow: 0 4px 10px rgba(234,179,8,0.3);
       transform: translateY(-0.5px);
     }
 
@@ -188,6 +188,7 @@
 
     .random-btn {
       background: #111827;
+      color: #f9fafb;
     }
 
     .random-btn:hover {
@@ -228,7 +229,7 @@
 
     @media (max-width: 480px) {
       .page {
-        margin-top: 24px;
+        margin-top: 14px;
       }
 
       .headline {
@@ -255,9 +256,13 @@
   <!-- TICKER -->
   <div class="ticker">
     <div class="ticker-inner">
-      Arama çubuğuna favori siteni yaz ve ara! Sıradaki adresimiz
-      <span class="ticker-highlight">adreskacoldu1.com</span>
-      olacaktır. Bol şans dileriz!
+      🎯 Arama çubuğuna <strong>favori siteni</strong> yaz ve ara!
+      &nbsp;&nbsp;•&nbsp;&nbsp;
+      🔁 Linkler değişebilir, bizi yer imlerine eklemeyi unutma.
+      &nbsp;&nbsp;•&nbsp;&nbsp;
+      🚀 Sıradaki adresimiz <span class="ticker-highlight">adreskacoldu1.com</span> olacaktır.
+      &nbsp;&nbsp;•&nbsp;&nbsp;
+      🍀 Bol şans dileriz!
     </div>
   </div>
 
@@ -365,7 +370,6 @@
       const value = inputEl.value;
       const key = normalize(value);
       goToKey(key);
-      // Öneri kutusunu kapat
       suggestionsEl.style.display = "none";
       suggestionsEl.innerHTML = "";
     });
