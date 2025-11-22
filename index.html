@@ -1,1 +1,426 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>adreskacoldu.com · Güncel Adres Bulucu</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * { box-sizing: border-box; }
 
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", sans-serif;
+      background: #f7f7f8;
+      color: #111827;
+    }
+
+    .ticker {
+      position: relative;
+      width: 100%;
+      background: #0f172a;
+      color: #e5e7eb;
+      overflow: hidden;
+      padding: 10px 0;
+      font-size: 13px;
+      letter-spacing: 0.01em;
+    }
+
+    .ticker-inner {
+      white-space: nowrap;
+      display: inline-block;
+      padding-left: 100%;
+      animation: ticker-move 20s linear infinite;
+    }
+
+    .ticker-highlight {
+      color: #14b8a6; /* BUL butonunun rengi */
+      font-weight: 600;
+    }
+
+    @keyframes ticker-move {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-100%); }
+    }
+
+    .page {
+      max-width: 640px;
+      margin: 32px auto 56px;
+      padding: 0 16px;
+    }
+
+    .headline {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 24px;
+      color: #111827;
+    }
+
+    /* Öne çıkan siteler – kayan liste */
+    .featured-section {
+      margin-bottom: 22px;
+    }
+
+    .featured-scroller {
+      overflow: hidden;
+      padding: 4px 0;
+    }
+
+    .featured-track {
+      display: inline-flex;
+      align-items: stretch;
+      gap: 10px;
+      animation: featured-scroll 26s linear infinite;
+      will-change: transform;
+    }
+
+    @keyframes featured-scroll {
+      0%   { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    .featured-card {
+      flex: 0 0 auto;
+      min-width: 150px;
+      padding: 9px 14px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    .featured-card span {
+      opacity: 0.9;
+    }
+
+    .featured-card small {
+      font-size: 11px;
+      opacity: 0.6;
+    }
+
+    .featured-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+      background: #f9fafb;
+    }
+
+    .featured-card:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    }
+
+    /* Arama bloku */
+    .search-block {
+      margin-bottom: 20px;
+    }
+
+    .search-label {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #4b5563;
+    }
+
+    form {
+      display: flex;
+      gap: 8px;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 8px;
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      background: white;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 1px rgba(20,184,166,0.15);
+      background: #f9fafb;
+    }
+
+    button {
+      border: none;
+      border-radius: 8px;
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #14b8a6;
+      color: white;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      white-space: nowrap;
+      transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.1s ease;
+    }
+
+    button:hover {
+      background: #0d9488;
+      box-shadow: 0 4px 10px rgba(13,148,136,0.2);
+      transform: translateY(-0.5px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    .random-block {
+      margin-top: 18px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .random-btn {
+      background: #111827;
+    }
+
+    .random-btn:hover {
+      background: #020617;
+      box-shadow: 0 4px 10px rgba(15,23,42,0.25);
+    }
+
+    .hint {
+      font-size: 12px;
+      color: #9ca3af;
+    }
+
+    /* Öneri (autocomplete) alanı */
+    .suggestions {
+      margin-top: 6px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      box-shadow: 0 8px 18px rgba(0,0,0,0.06);
+      font-size: 13px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .suggestion-item {
+      padding: 8px 10px;
+      cursor: pointer;
+      color: #111827;
+    }
+
+    .suggestion-item + .suggestion-item {
+      border-top: 1px solid #f3f4f6;
+    }
+
+    .suggestion-item:hover {
+      background: #f3f4f6;
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        margin-top: 24px;
+      }
+
+      .headline {
+        font-size: 18px;
+        margin-bottom: 18px;
+      }
+
+      form {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+
+      .random-block {
+        align-items: stretch;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      Arama çubuğuna favori siteni yaz ve ara! Sıradaki adresimiz
+      <span class="ticker-highlight">adreskacoldu1.com</span>
+      olacaktır. Bol şans dileriz!
+    </div>
+  </div>
+
+  <main class="page">
+    <h1 class="headline">Favori sitene giden en kısa yol...</h1>
+
+    <!-- Öne çıkan siteler – kayan liste -->
+    <section class="featured-section" aria-label="Öne çıkan siteler">
+      <div class="featured-scroller">
+        <div class="featured-track" id="featuredTrack">
+          <div class="featured-card" data-key="betpas">
+            <span>Betpas</span>
+            <small>Tek tıkla git</small>
+          </div>
+          <div class="featured-card" data-key="restbet">
+            <span>Restbet</span>
+            <small>Tek tıkla git</small>
+          </div>
+          <div class="featured-card" data-key="bethand">
+            <span>Bethand</span>
+            <small>Tek tıkla git</small>
+          </div>
+          <div class="featured-card" data-key="verabet">
+            <span>Verabet</span>
+            <small>Tek tıkla git</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Arama Kutusu -->
+    <section class="search-block">
+      <div class="search-label">Buradan Gir</div>
+      <form id="searchForm">
+        <input
+          id="siteInput"
+          type="text"
+          autocomplete="off"
+          placeholder="Örnek: betpas, restbet, bethand..."
+        />
+        <button type="submit">BUL</button>
+      </form>
+      <div id="suggestions" class="suggestions"></div>
+    </section>
+
+    <!-- Random yönlendirme -->
+    <section class="random-block">
+      <button type="button" class="random-btn" id="randomBtn">
+        Götür beni gittiğin yere...
+      </button>
+      <div class="hint">
+        Kayıtlı sitelerden birine rastgele yönlendirir.
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Site veritabanı
+    const SITES = {
+      betpas: "https://shoort.in/betpas",
+      restbet: "https://shoort.in/restbet",
+      bethand: "https://shoort.in/bethand",
+      verabet: "https://veragit.link"
+      // Yarın betpir eklersen:
+      // betpir: "https://....."
+    };
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .trim()
+        .replace(/ç/g, "c")
+        .replace(/ğ/g, "g")
+        .replace(/ı/g, "i")
+        .replace(/ö/g, "o")
+        .replace(/ş/g, "s")
+        .replace(/ü/g, "u")
+        .replace(/\s+/g, "");
+    }
+
+    function goToKey(key) {
+      const url = SITES[key];
+      if (url) {
+        window.open(url, "_blank", "noopener,noreferrer");
+      } else {
+        alert("Bu site henüz adreskacoldu veritabanında kayıtlı değil.");
+      }
+    }
+
+    // Kayan öne çıkanlar için track'i iki kez çoğalt (loop efekti)
+    document.addEventListener("DOMContentLoaded", () => {
+      const track = document.getElementById("featuredTrack");
+      if (track) {
+        track.innerHTML += track.innerHTML;
+      }
+    });
+
+    const searchForm = document.getElementById("searchForm");
+    const inputEl = document.getElementById("siteInput");
+    const suggestionsEl = document.getElementById("suggestions");
+
+    // Form submit
+    searchForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const value = inputEl.value;
+      const key = normalize(value);
+      goToKey(key);
+      // Öneri kutusunu kapat
+      suggestionsEl.style.display = "none";
+      suggestionsEl.innerHTML = "";
+    });
+
+    // Input için autocomplete / ön gösterim
+    inputEl.addEventListener("input", () => {
+      const value = normalize(inputEl.value);
+      if (!value) {
+        suggestionsEl.style.display = "none";
+        suggestionsEl.innerHTML = "";
+        return;
+      }
+
+      // sadece baş harfe göre (startsWith)
+      const matches = Object.keys(SITES).filter(key => key.startsWith(value));
+
+      if (!matches.length) {
+        suggestionsEl.style.display = "none";
+        suggestionsEl.innerHTML = "";
+        return;
+      }
+
+      suggestionsEl.innerHTML = matches
+        .map(key => {
+          const label = key.charAt(0).toUpperCase() + key.slice(1);
+          return `<div class="suggestion-item" data-key="${key}">${label}</div>`;
+        })
+        .join("");
+
+      suggestionsEl.style.display = "block";
+    });
+
+    // Öneri tıklama
+    suggestionsEl.addEventListener("click", (e) => {
+      const item = e.target.closest(".suggestion-item");
+      if (!item) return;
+      const key = item.getAttribute("data-key");
+      goToKey(key);
+    });
+
+    // Öne çıkan kartlar
+    document.querySelectorAll(".featured-card").forEach(card => {
+      card.addEventListener("click", () => {
+        const key = card.getAttribute("data-key");
+        goToKey(key);
+      });
+    });
+
+    // Random yönlendirme
+    document.getElementById("randomBtn").addEventListener("click", () => {
+      const keys = Object.keys(SITES);
+      if (!keys.length) return;
+      const randomKey = keys[Math.floor(Math.random() * keys.length)];
+      goToKey(randomKey);
+    });
+  </script>
+</body>
+</html>
